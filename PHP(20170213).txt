@@ -1,0 +1,108 @@
+1.COOKIE、SESSION的联系和区别，多台web服务器如何共享SESSION？
+    session是通过cookie来工作的，session和cookie之间是通过$_COOKIE['PHPSESSID']来联系的，
+    通过$_COOKIE['PHPSESSID']可以知道session的id，从而获取到其他的信息。cookie数据存放在客户的浏览器上，
+    session数据放在服务器上,cookie有大小限制，为4K。
+
+    如何共享SESSION:
+    一、利用数据库同步session
+        sessionid还是利用cookie机制存储到客户端，但session数据却存放在MySQL服务器上。
+        缺点：依赖性太强，Mysql无法工作了影响所有的Web服务器，最影响系统速度。
+        
+    二、利用cookie同步session
+        缺点:1.用户禁用cookie或者cookie泄露，存在安全隐患。
+             2.浏览器对单个cookie的数据量大小限制为4K左右，因此会存在数据量的限制问题。
+             3.影响带宽性能，降低了页面的访问速度。在高访问量的情况下，用户每次请求时，都要将客户端cookie中的session数据
+             发送到服务器，要占用较多的带宽，进而影响访问速度，服务器带宽成本增高。
+    
+    三、利用memcache、redis同步session
+        推荐使用redis内存数据库，因为它比memcache支持更多的数据类型，且支持内存数据备份到磁盘。
+        缺点：memcache把内存分成很多种规格的存储块，有块就有大小，这种方式也就决定了，memcache不能完全利用内存，
+        会产生内存碎片，如果存储块不足，还会产生内存溢出。 
+    
+    三、使用硬件设备
+            这个算是比较成熟的解决方案了，使用类似BIG-IP的负载设备来实现资源共享，那么就能够又稳定又合理的的共享Session了。
+        目前很多门户网站采用这种方式。
+        缺点:很明显，贵，不过对于专业或者大型应用来讲，是比较合理并且值得的。
+        
+2.HTTP协议中的POST和GET有何区别？
+    本质:GET用于查询，POST用于修改。
+    1）GET请求的数据是放在HTTP包头中的，也就是URL之后，而Post是把提交的数据放在HTTP正文中的。
+
+    2）GET提交的数据比较少，不同浏览器的限制不同，所以要满足最低的IE对其限制为2K+35即2083个字节，
+    而POST可以传送更多的数据，PHP默认一般是2m（理论上是没有限制的，但一般也会受不同的环境，如浏览器、操作系统、
+    服务器处理能力等限制，IIS4可支持80KB，IIS5可支持100KB）。
+
+    3）Post的安全性要比Get高，因为Get时，参数数据是明文传输的，而且使用GET的话，
+    还可能造成Cross-site request forgery攻击。而POST数据则可以加密的，但GET的速度可能会快些。
+
+3.reqiure的include都可包含文件，二者的区别何在？
+    1)当包含的文件不存在时,
+    include:代码继续往下执行,报一个warning,
+    而require则是报fatal error, 停止执行.
+
+    2)include 一般是放在流程控制的处理部分中。PHP 程序网页在读到 include 的文件时，才将它读进来。
+    PHP 程序在执行前，就会先读入 require 所指定引入的文件。
+
+    3)使用require()语句包含的文件不能有返回值。试图在require()语句中返回值将会产生一个解析错误。
+
+    *_once只包含一次,即便多次调用.
+    而不加once,则调用一次,包含一次.
+
+    关于效率:
+    加once需要检测已加载的文件,效率稍低,
+    如果能确认不会多次包含,不必加once
+
+4.写一个函数，可以遍历文件夹下的所有文件和文件夹.
+    1)
+    function dir_recursive($file_name){
+        if($file_name == '.' || $file_name == '..') return false;
+        if(!is_dir($file_name)) return false;
+        $file_arr = scandir($file_name);
+        if(empty($file_arr)) return false;
+        foreach($file_arr as $val){
+            dir_recursive($val);
+        }
+    }
+    dir_recursive($filename);
+
+     2)
+    function dir_recursive($file_name){
+        if($file_name == '.' || $file_name == '..') return fasle;
+        if(!is_dir($file_name)) return false;
+        $open = opendir($file_name);
+        while(($hd = readdir($open)) !== false){
+            dir_recursive($hd);
+        }
+    }
+    dir_recursive($filename);
+
+5.js中网页前进，后退,刷新，停止的代码
+    前进: history.forward();=history.go(1);
+    后退: history.back();=history.go(-1);
+    刷新：window.location.reload();
+    停止：document.execCommand('stop');
+
+6.打开php.ini中的Safe_mode,会影响哪些参数?至少说出6个.
+    开启之后，主要会对系统操作、文件、权限设置等方法产生影响，平常项目基本上也用不到这些方法。
+    主要是用来应对webshell吧，减少被人植入webshell所带来的某些安全问题。
+    dbmopen() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+    dbase_open() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+    filepro() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+    move_uploaded_file() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+    chdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+    exec() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
+    escapeshellcmd() 将被作用于此函数的参数上。
+    system() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
+    escapeshellcmd() 将被作用于此函数的参数上。
+    fopen() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+    mkdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+    chmod() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。 另外，不能设置 SUID、SGID 和 sticky bits
+    mail() 在安全模式下，第五个参数被屏蔽。
+    set_time_limit() 在安全模式下不起作用。
+    header() 在安全模式下，如果设置了 WWW-Authenticate，当前脚本的 uid 将被添加到该标头的 realm 部分。
+
+7.PHP的整型溢出问题是怎样的
+    PHP的整型数的字长和平台有关，对于32位的操作系统，最大的整型是有二十多亿，其实就是2的31次方，
+    最小为-2的31次方，PHP不支持无符号的整数。 如果一个数超出了integer范围，将会被自动解释为float。
+    如果执行的运算结果超出了 integer 范围，也会返回 float。（那在java、C中的整型整型溢出会怎样）
+
