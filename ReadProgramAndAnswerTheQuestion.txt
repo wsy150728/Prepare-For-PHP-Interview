@@ -10,7 +10,14 @@
 答案:1
 
 2.写出下列程序的输出结果
+    <?php
+          $num = 10;
+          function multiply(){
+            $num = $num * 10;
+          }
+          multiply();
+          echo $num;
 
 
-分析:
-答案:
+分析:报错
+答案:Undefined variable: num in ....
