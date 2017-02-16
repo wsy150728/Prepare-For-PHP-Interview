@@ -76,28 +76,28 @@
     dir_recursive($filename);
 
 5.js中网页前进，后退,刷新，停止的代码
-    前进: history.forward();=history.go(1);
-    后退: history.back();=history.go(-1);
+    前进: history.forward();history.go(1);
+    后退: history.back();history.go(-1);
     刷新：window.location.reload();
     停止：document.execCommand('stop');
 
 6.打开php.ini中的Safe_mode,会影响哪些参数?至少说出6个.
-    开启之后，主要会对系统操作、文件、权限设置等方法产生影响，平常项目基本上也用不到这些方法。
-    主要是用来应对webshell吧，减少被人植入webshell所带来的某些安全问题。
-    dbmopen() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
-    dbase_open() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
-    filepro() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
-    move_uploaded_file() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
-    chdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
-    exec() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
-    escapeshellcmd() 将被作用于此函数的参数上。
-    system() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
-    fopen() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
-    mkdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
-    chmod() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。 另外，不能设置 SUID、SGID 和 sticky bits
-    mail() 在安全模式下，第五个参数被屏蔽。
-    set_time_limit() 在安全模式下不起作用。
-    header() 在安全模式下，如果设置了 WWW-Authenticate，当前脚本的 uid 将被添加到该标头的 realm 部分。
+    开启之后，主要会对系统操作、文件、权限设置等方法产生影响，平常项目基本上也用不到这些方法。主要是用来应对webshell吧，
+    减少被人植入webshell所带来的某些安全问题。
+        move_uploaded_file() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+        chdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+        exec() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
+        system() 只能在 safe_mode_exec_dir 设置的目录下进行执行操作。基于某些原因，目前不能在可执行对象的路径中使用。
+        fopen() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+        mkdir() 检查被操作的目录是否与正在执行的脚本有相同的 UID（所有者）。
+        chmod() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。 另外，不能设置 SUID、SGID 和 sticky bits
+        mail() 在安全模式下，第五个参数被屏蔽。
+        set_time_limit() 在安全模式下不起作用。
+        header() 在安全模式下，如果设置了 WWW-Authenticate，当前脚本的 uid 将被添加到该标头的 realm 部分。
+        dbmopen() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+        dbase_open() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
+        escapeshellcmd() 将被作用于此函数的参数上。
+        filepro() 检查被操作的文件或目录是否与正在执行的脚本有相同的 UID（所有者）。
 
 7.PHP的整型溢出问题是怎样的
         PHP的整型数的字长和平台有关，对于32位的操作系统，最大的整型是有二十多亿，其实就是2的31次方，最小为-2的31次方，PH
@@ -126,7 +126,7 @@
 
     [响应消息格式]
     HTTP/1.1 200 0K
-    Connectlon:close
+    Connection:close
     Date: Thu, 13 Oct 2005 03:17:33 GMT
     Server: Apache/2.0.54 (Unix)
     Last—Nodified:Mon,22 Jun 1998 09;23;24 GMT
@@ -162,7 +162,7 @@
     403 Forbidden。请求被服务器拒绝了。
     404 Not Found。表示服务器找不到请求的网页，服务器上不存在的网页经常会返回的HTTP状态码。
 
-    500 Internal Server Error。
+    500 Internal Server Error。服务器内部错误，一般指代码错误。
     503 Service Unavailable。服务器目前无法为请求提供服务，但过一段时间就可以恢复服务。
     504 Gateway Timeout。与状态吗408类似， 但是响应来自网关或代理，此网关或代理在等待另一台服务器的响应时出现了超时。
 

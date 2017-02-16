@@ -58,20 +58,7 @@
         2  11 9  3  16 25
         2  3  9  11 16 25
 
-
-5.awk、sed、sort的基本使用（用实例考察的）
-    [例]：有如下文件test,请统计每个网址出现次数，用一句shell实现。
-    a 20:00
-    b 19:30
-    c 14:00
-    d 23:00
-    e 20:30
-    f 20:30
-
-    cat test| awk -F' ' '{print $2}' |sort -n |uniq -c
-
-
-6.Memcached、redis的使用和理解
+5.Memcached、redis的使用和理解
     Memcached和redis 都是一个key-value的内存式存储系统，通过hash表来存储检索结果，做到强大的缓存机制。
     下面是从百科中摘录的介绍。具体实践和使用后续再详细介绍。
         Memcache是一个高性能的分布式的内存对象缓存系统，通过在内存里维护一个统一的巨大的hash表，它能够用来存储各种格式的数据
@@ -79,7 +66,7 @@
         redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、
     set(集合)和zset(有序集合)。
 
-7.strlen()与mb_strlen的作用分别是什么
+6.strlen()与mb_strlen的作用分别是什么
         PHP内置的字符串长度函数strlen无法正确处理中文字符串，它得 到的只是字符串所占的字节数。对于GB2312的中文编码，strl
     en得到的值是汉字个数的2倍，而对于UTF-8编码的中文，就是3倍的差异了（在 UTF-8编码下，一个汉字占3个字节）。
         采用mb_strlen函数可以较好地解决这个问题。mb_strlen的用法和 strlen类似，只不过它有第二个可选参数用于指定字符编码。
@@ -88,55 +75,19 @@
         需要注意的是，mb_strlen并不是PHP核心函数，使用前需要确保在php.ini中加载了php_mbstring.dll，即确保“extension=php
     _mbstring.dll”这一行存在并且没有被注释掉，否则会出现未定义函 数的问题。
 
-8.中文字符串的截取有时会出现乱码，如何解决
+7.中文字符串的截取有时会出现乱码，如何解决
     使用mbstring扩展库的mb_substr()截取就不会出现乱码了。
         但是中英文混合的还是会出现问题，例如我要显示一个小图片的简要信息，5 个中文正好，超过 5 个就截取前4再加上 ”…”，
     这样处理中文是没问题了，可是处理英文或数字，这样截取就太短了。还是自己书写截取函数，但效率不如用mbstring扩展库来得高。
-    下面是ecshop里面的截取UTF-8编码下字符串的函数。
-        function sub_str($str, $length = , $append = true)
-        {
-          $str = trim($str);
-          $strlength = strlen($str);
-          if ($length == || $length >= $strlength)
-          {
-            return $str; //截取长度等于或大于等于本字符串的长度，返回字符串本身
-          }
-          elseif ($length < ) //如果截取长度为负数
-          {
-            $length = $strlength + $length;//那么截取长度就等于字符串长度减去截取长度
-            if ($length < )
-            {
-              $length = $strlength;//如果截取长度的绝对值大于字符串本身长度，则截取长度取字符串本身的长度
-            }
-          }
-          if (function_exists('mb_substr'))
-          {
-            $newstr = mb_substr($str, , $length, EC_CHARSET);
-          }
-          elseif (function_exists('iconv_substr'))
-          {
-            $newstr = iconv_substr($str, , $length, EC_CHARSET);
-          }
-          else
-          {
-            //$newstr = trim_right(substr($str, , $length));
-            $newstr = substr($str, , $length);
-          }
-          if ($append && $str != $newstr)
-          {
-            $newstr .= '...';
-          }
-          return $newstr;
-        }
 
-9.写出php的public、protected、private三种访问控制模式的区别
+8.写出php的public、protected、private三种访问控制模式的区别
     public: 公有类型
-            在子类中可以通过 self::属性名(或方法名)  调用public方法或属性,parent::方法名 调用父类方法
-    　　　　在实例中可以能过 $obj->属性名(或方法名) 来调用　public类型的方法或属性
+            在子类中可以通过 self::属性名(或方法名) 调用public方法或属性, parent::方法名 调用父类方法
+    　　　　在实例中可以能过 $obj->属性名(或方法名) 来调用public类型的方法或属性
 
     protected: 受保护类型
-            在子类中可以通过 self::属性名(或方法名) 调用protected方法或属性,parent::属性名(或方法名) 调用父类方法。
-            在实例中不能通过 $obj->属性名(或方法名) 来调用  protected类型的方法或属性
+            在子类中可以通过 self::属性名(或方法名) 调用protected方法或属性, parent::属性名(或方法名) 调用父类方法。
+            在实例中不能通过 $obj->属性名(或方法名) 来调用protected类型的方法或属性
 
     private: 私有类型
              该类型的属性或方法只能在该类中使用，
@@ -144,16 +95,16 @@
 
     self和parent 的区别
       a).在子类中常用到这两个对象。他们的主要区别在于self可以调用父类中的公有或受保护的属性，但parent不可以调用
-      b).self:: 它表示当前类的静态成员(方法和属性)　与 $this　不同,$this是指当前对像
+      b).self:: 它表示当前类的静态成员(方法和属性)与$this不同,$this是指当前对像
 
-10.简单描述mysql中，索引，主键，唯一索引，联合索引的区别，对数据库的性能有什么影响（从读写两方面）
+9.简单描述mysql中，索引，主键，唯一索引，联合索引的区别，对数据库的性能有什么影响
     Mysql索引概念：
         说说Mysql索引，看到一个很少比如：索引就好比一本书的目录，它会让你更快的找到内容，显然目录（索引）并不是越多越好，
     假如这本书1000页，有500也是目录，它当然效率低，目录是要占纸张的,而索引是要占磁盘空间的。
 
     Mysql索引主要有两种结构：B+树和hash.
 
-    hash:hsah索引在mysql比较少用,他以把数据的索引以hash形式组织起来,因此当查找某一条记录的时候,速度非常快.当时因为是hash
+    hash:hsah索引在mysql比较少用,他以把数据的索引以hash形式组织起来,因此当查找某一条记录的时候,速度非常快.但是因为是hash
     结构,每个键只对应一个值,而且是散列的方式分布.所以他并不支持范围查找和排序等功能.
 
     B+树:b+tree是mysql使用最频繁的一个索引数据结构,数据结构以平衡树的形式来组织,因为是树型结构,所以更适合用来处理排序,范
@@ -171,9 +122,40 @@
     Mysql各种索引区别：
     普通索引：最基本的索引，没有任何限制
     唯一索引：与"普通索引"类似，不同的就是：索引列的值必须唯一，但允许有空值。
-    主键索引：它 是一种特殊的唯一索引，不允许有空值。
-    全文索引：仅可用于 MyISAM 表，针对较大的数据，生成全文索引很耗时好空间。
-    组合索引：为了更多的提高mysql效率可建立组合索引，遵循”最左前缀“原则。
+    主键索引：它是一种特殊的唯一索引，不允许有空值。
+    全文索引：仅可用于MyISAM 表，针对较大的数据，生成全文索引很耗时耗空间。
+    组合索引：为了更多的提高mysql效率可建立组合索引，遵循"最左前缀"原则。
 
-    查询：唯一索引 > 自增主键 > 主键
-    插入：主键 > 自增主键 > 唯一索引
+10.PHP写个函数来解决多线程同时读写一个文件的问题
+    用PHP的flock在写文件前先锁上，等写完后解锁，这样就实现了多线程同时读写一个文件避免冲突。大概就是下面这个流程
+    /*
+    *flock(file,lock,block)
+    *file 必需，规定要锁定或释放的已打开的文件
+    *lock 必需。规定要使用哪种锁定类型。
+    *block 可选。若设置为 1 或 true，则当进行锁定时阻挡其他进程。
+    *lock
+    *LOCK_SH 要取得共享锁定（读取的程序）
+    *LOCK_EX 要取得独占锁定（写入的程序）
+    *LOCK_UN 要释放锁定（无论共享或独占）
+    *LOCK_NB 如果不希望 flock() 在锁定时堵塞
+    */
+    $file = fopen("/tmp/lock.txt", "w+");
+    if (flock($file,LOCK_EX))
+    {
+        fwrite($file,'write more words');
+        flock($file,LOCK_UN);
+    }
+    else
+    {
+        //处理错误逻辑
+    }
+    fclose($file);
+        但在PHP中，flock似乎工作的不是那么好！在多并发情况下，似乎是经常独占资源，不即时释放，或者是根本不释放，造成死锁，
+    从而使服务器的cpu占用很高，甚至有时候会让服务器彻底死掉。好像在很多linux/unix系统中，都会有这样的情况发生。所以使用
+    flock之前，一定要慎重考虑。
+    解决方案:
+    方案一：对文件进行加锁时，设置一个超时时间。
+    方案二：不使用flock函数，借用临时文件来解决读写冲突的问题。
+    方案三：对操作的文件进行随机读写，以降低并发的可能性。
+    方案四：将所有要操作的进程放入一个队列中。
+
