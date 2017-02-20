@@ -96,4 +96,18 @@
     error_reporting(E_ALL);
     ?>
 
-8.
+8.写出smarty模板的特点
+    速度快，编译型，缓存技术，插件机制，强大的表现逻辑
+
+9,PHP的垃圾收集机制是怎样的
+    PHP可以自动进行内存管理，清除不再需要的对象。
+    PHP使用了引用计数(reference counting)这种单纯的垃圾回收(garbage collection)机制。每个对象都内含一个引用计数器，每个
+    reference连接到对象，计数器加1。当reference离开生存空间或被设为NULL，计数器减1。当某个对象的引用计数器为零时，PHP知道
+    你将不再需要使用这个对象，释放其所占的内存空间。
+
+10.mysql_fetch_row()和mysql_fetch_array()有什么分别？
+    mysql_fetch_row()把数据库的一列储存在一个以零为基数的数组中，第一栏在数组的索引0，第二栏在索引1，依此类推。
+    mysql_fetch_assoc()把数据库的一列储存在一个关联数组中，数组的索引就是字段名称，例如我的数据库查询送回“first_name”、
+    “last_name”、“email”三个字段，数组的索引便是“first_name”、“last_name”和“email”。
+    mysql_fetch_array()可以同时送回mysql_fetch_row()和mysql_fetch_assoc()的值。
+
