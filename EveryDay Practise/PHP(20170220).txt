@@ -28,5 +28,32 @@
        提高检索速度
     7、删除不再使用或者很少使用的索引
 
-5.
-.
+5.客户端和服务器端的ip获取
+    客户端获取:
+    getenv('HTTP_CLIENT_IP')
+    getenv('HTTP_X_FORWARDED_FOR')
+    getenv('REMOTE_ADDR')
+    服务器端:
+    $_SERVER['SERVER_ADDR']
+    $_SERVER['LOCAL_ADDR']
+
+6.修改session的生存时间
+    !必须在session_start()之前!
+    $lifTime = 24 * 3600;
+    session_set_cookie_params($lifTime);
+
+7.浏览器输入一个url后发生的事情
+    输入地址
+    浏览器查找域名的 IP 地址
+    这一步包括 DNS 具体的查找过程，包括：浏览器缓存->系统缓存->路由器缓存...
+    浏览器向 web 服务器发送一个 HTTP 请求
+    服务器的永久重定向响应（从 http://example.com 到 http://www.example.com）
+    浏览器跟踪重定向地址
+    服务器处理请求
+    服务器返回一个 HTTP 响应
+    浏览器显示 HTML
+    浏览器发送请求获取嵌入在 HTML 中的资源（如图片、音频、视频、CSS、JS等等）
+    浏览器发送异步请求
+
+
+
